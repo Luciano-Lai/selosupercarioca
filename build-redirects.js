@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// 1. Lê o arquivo JSON com todos os links
 const linksPath = path.join(__dirname, 'links.json');
 if (!fs.existsSync(linksPath)) {
-  console.error('❌ Arquivo links.json não encontrado!');
+  console.error('❌ links.json não encontrado!');
   process.exit(1);
 }
 
@@ -12,25 +11,18 @@ const links = JSON.parse(fs.readFileSync(linksPath, 'utf8'));
 const totalLinks = Object.keys(links).length;
 console.log(`📊 ${totalLinks} links encontrados no JSON.`);
 
-// 2. Define a pasta de saída (a Vercel serve a pasta 'public')
 const outputDir = path.join(__dirname, 'public');
-
-// 3. Limpa a pasta public/ se ela já existir
 if (fs.existsSync(outputDir)) {
   fs.rmSync(outputDir, { recursive: true, force: true });
 }
 fs.mkdirSync(outputDir, { recursive: true });
 
-// 4. Gera um arquivo HTML para cada par {codigo: destino}
 let contador = 0;
 for (const [codigo, destino] of Object.entries(links)) {
-  // Validação básica: código com 5 caracteres alfanuméricos
   if (!/^[A-Z0-9]{5}$/.test(codigo)) {
     console.warn(`⚠️ Código inválido ignorado: ${codigo}`);
     continue;
   }
-
-  // HTML MÍNIMO - apenas o redirecionamento
   const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -40,20 +32,16 @@ for (const [codigo, destino] of Object.entries(links)) {
 </head>
 <body></body>
 </html>`;
-
-  const filePath = path.join(outputDir, `${codigo}.html`);
-  fs.writeFileSync(filePath, html);
+  fs.writeFileSync(path.join(outputDir, `${codigo}.html`), html);
   contador++;
 }
 
-// 5. Cria um index.html para a raiz (mostra a quantidade de links)
 const indexHtml = `<!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><title>Encurtador Super Carioca</title></head>
 <body style="font-family: Arial; text-align: center; padding: 50px;">
   <h1>🔗 Encurtador Super Carioca</h1>
   <p>Total de links ativos: <strong>${totalLinks}</strong></p>
-  <p>Este diretório redireciona para as planilhas das máquinas de ar condicionado.</p>
 </body>
 </html>`;
 fs.writeFileSync(path.join(outputDir, 'index.html'), indexHtml);
