@@ -19,6 +19,7 @@ fs.mkdirSync(outputDir, { recursive: true });
 
 let contador = 0;
 for (const [codigo, destino] of Object.entries(links)) {
+  // Validação: código com 5 caracteres alfanuméricos (maiúsculos)
   if (!/^[A-Z0-9]{5}$/.test(codigo)) {
     console.warn(`⚠️ Código inválido ignorado: ${codigo}`);
     continue;

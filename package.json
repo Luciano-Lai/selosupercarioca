@@ -1,7 +1,6 @@
 {
   "name": "encurtador-super-carioca",
   "version": "1.0.0",
-  "description": "Diretório de redirecionamento para QR Codes",
   "scripts": {
     "build": "node build-redirects.js"
   }
